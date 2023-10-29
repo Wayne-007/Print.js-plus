@@ -5,3 +5,4 @@ yarn.lock
 coverage/
 .vscode
 package-lock.json
+.nvmrc
