@@ -1,6 +1,39 @@
 import { capitalizePrint, addHeader, addFooter } from './functions'
 import Print from './print'
 
+const handleData = ({ data = [], level = 0, params }) => {
+  let maxLevel = level + 1
+  const keys = []
+  const _resData = data.map((property) => {
+    const _item = {
+      field: typeof property === 'object' ? property.field : property,
+      displayName: typeof property === 'object' ? property.displayName : property,
+      columnSize: typeof property === 'object' && property.columnSize ? property.columnSize + ';' : 100 / params.properties.length + '%;',
+      level: level + 1,
+    }
+    if (property.children && property.children.length) {
+      _item.colspan = property.children.length
+      const childrenObj = handleData({
+        data: property.children,
+        level: _item.level,
+      })
+      _item.children = childrenObj.data
+      maxLevel = Math.max(maxLevel, childrenObj.maxLevel)
+      keys.push(...childrenObj.keys)
+    } else {
+      keys.push(_item.field)
+    }
+    return _item
+  })
+
+  return {
+    data: _resData,
+    maxLevel,
+    keys,
+  }
+}
+let handleDataRes = {}
+
 export default {
   print: (params, printFrame) => {
     // Check if we received proper data
@@ -19,13 +52,19 @@ export default {
     }
 
     // We will format the property objects to keep the JSON api compatible with older releases
-    params.properties = params.properties.map(property => {
-      return {
-        field: typeof property === 'object' ? property.field : property,
-        displayName: typeof property === 'object' ? property.displayName : property,
-        columnSize: typeof property === 'object' && property.columnSize ? property.columnSize + ';' : 100 / params.properties.length + '%;'
-      }
-    })
+
+    handleDataRes = handleData({ data: params.properties, params })
+    params.properties = handleDataRes.data
+
+    console.log('handleData===>', handleDataRes)
+
+    // params.properties.map((property) => {
+    //   return {
+    //     field: typeof property === 'object' ? property.field : property,
+    //     displayName: typeof property === 'object' ? property.displayName : property,
+    //     columnSize: typeof property === 'object' && property.columnSize ? property.columnSize + ';' : 100 / params.properties.length + '%;',
+    //   }
+    // })
 
     // Create a print container element
     params.printableElement = document.createElement('div')
@@ -45,10 +84,10 @@ export default {
 
     // Print the json data
     Print.send(params, printFrame)
-  }
+  },
 }
 
-function jsonToHTML (params) {
+function jsonToHTML(params) {
   // Get the row and column data
   const data = params.printable
   const properties = params.properties
@@ -64,10 +103,37 @@ function jsonToHTML (params) {
   // Add the table header row
   htmlData += '<tr>'
 
-  // Add the table header columns
-  for (let a = 0; a < properties.length; a++) {
-    htmlData += '<th style="width:' + properties[a].columnSize + ';' + params.gridHeaderStyle + '">' + capitalizePrint(properties[a].displayName) + '</th>'
+  const handleHtmlDataObjRes = {}
+  const handleHtmlData = (properties, params) => {
+    let htmlData = ''
+    properties.forEach((element) => {
+      if (!!handleHtmlDataObjRes[`level_${element.level}`] === false) {
+        handleHtmlDataObjRes[`level_${element.level}`] = ''
+      }
+      htmlData = `<th style="width:${element.columnSize};${params.gridHeaderStyle}"`
+      if (!!element.colspan === true) {
+        htmlData += `colspan="${element.colspan}"`
+      } else if (element.level < handleDataRes.maxLevel) {
+        htmlData += `rowspan="${handleDataRes.maxLevel - element.level + 1}"`
+      }
+      htmlData += `>${capitalizePrint(element.displayName)}</th>`
+      handleHtmlDataObjRes[`level_${element.level}`] += htmlData
+      if (element.children && element.children.length) {
+        handleHtmlData(element.children, params)
+      }
+    })
+    return handleHtmlDataObjRes
   }
+  const handleHtmlDataRes = handleHtmlData(properties, params)
+  console.log('handleHtmlData===>', handleHtmlDataRes)
+  handleHtmlDataRes.forEach((element) => {
+    htmlData += element
+  })
+
+  // Add the table header columns
+  // for (let a = 0; a < properties.length; a++) {
+  //   htmlData += '<th style="width:' + properties[a].columnSize + ';' + params.gridHeaderStyle + '">' + capitalizePrint(properties[a].displayName) + '</th>'
+  // }
 
   // Add the closing tag for the table header row
   htmlData += '</tr>'
