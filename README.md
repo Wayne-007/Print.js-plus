@@ -5,7 +5,7 @@
 [![Standard - JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](http://standardjs.com/)
 [![npm](https://img.shields.io/npm/v/print-js.svg)](https://www.npmjs.com/package/print-js)
 
-A tiny javascript library to help printing from the web.
+Based on Print.js (v1.6.0), a small javascript library that helps print from the web.
 
 > For documentation and examples please visit: [printjs.crabbly.com](http://printjs.crabbly.com)
 
@@ -54,17 +54,17 @@ Please do not use the issues channel for support requests. For help with using P
 
 Well structured, detailed bug reports are hugely valuable for the project.
 
-* Check the issue search to see if it has already been reported.
-* Isolate the problem to a simple test case.
-* Create a codepen, fiddle, codesandbox or similar online example replicating the issue.
+- Check the issue search to see if it has already been reported.
+- Isolate the problem to a simple test case.
+- Create a codepen, fiddle, codesandbox or similar online example replicating the issue.
 
 Please provide any additional details associated with the bug.
 
 ##### Pull requests
 
-Clear, concise pull requests are excellent at continuing the project's community driven growth.  
+Clear, concise pull requests are excellent at continuing the project's community driven growth.
 
-Please make your commits in logical sections with clear commit messages.  
+Please make your commits in logical sections with clear commit messages.
 
 ##### Setting up a dev environment
 
