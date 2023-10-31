@@ -4,24 +4,27 @@ import Print from './print'
 const handleData = ({ data = [], level = 0, params }) => {
   let maxLevel = level + 1
   const keys = []
+  const keyItems = []
   const _resData = data.map((property) => {
     const _item = {
       field: typeof property === 'object' ? property.field : property,
       displayName: typeof property === 'object' ? property.displayName : property,
       columnSize: typeof property === 'object' && property.columnSize ? property.columnSize + ';' : 100 / params.properties.length + '%;',
-      level: level + 1,
+      level: level + 1
     }
     if (property.children && property.children.length) {
       _item.colspan = property.children.length
       const childrenObj = handleData({
         data: property.children,
-        level: _item.level,
+        level: _item.level
       })
       _item.children = childrenObj.data
       maxLevel = Math.max(maxLevel, childrenObj.maxLevel)
       keys.push(...childrenObj.keys)
+      keyItems.push(...childrenObj.keyItems)
     } else {
       keys.push(_item.field)
+      keyItems.push(_item)
     }
     return _item
   })
@@ -30,6 +33,7 @@ const handleData = ({ data = [], level = 0, params }) => {
     data: _resData,
     maxLevel,
     keys,
+    keyItems
   }
 }
 let handleDataRes = {}
@@ -84,7 +88,7 @@ export default {
 
     // Print the json data
     Print.send(params, printFrame)
-  },
+  }
 }
 
 function jsonToHTML(params) {
@@ -101,7 +105,7 @@ function jsonToHTML(params) {
   }
 
   // Add the table header row
-  htmlData += '<tr>'
+  // htmlData += '<tr>'
 
   const handleHtmlDataObjRes = {}
   const handleHtmlData = (properties, params) => {
@@ -126,9 +130,12 @@ function jsonToHTML(params) {
   }
   const handleHtmlDataRes = handleHtmlData(properties, params)
   console.log('handleHtmlData===>', handleHtmlDataRes)
-  handleHtmlDataRes.forEach((element) => {
-    htmlData += element
-  })
+  for (const key in handleHtmlDataRes) {
+    htmlData += `<tr>${handleHtmlDataRes[key]}</tr>`
+  }
+  // handleHtmlDataRes.forEach((element) => {
+  //   htmlData += element
+  // })
 
   // Add the table header columns
   // for (let a = 0; a < properties.length; a++) {
@@ -136,7 +143,7 @@ function jsonToHTML(params) {
   // }
 
   // Add the closing tag for the table header row
-  htmlData += '</tr>'
+  // htmlData += '</tr>'
 
   // If the table header is marked as repeated, add the closing tag
   if (params.repeatTableHeader) {
@@ -146,27 +153,48 @@ function jsonToHTML(params) {
   // Create the table body
   htmlData += '<tbody>'
 
+  console.log('handleDataRes keys===>', handleDataRes.keys)
+
+  console.log('handleDataRes keyItems===>', handleDataRes.keyItems)
+
   // Add the table data rows
+  // for (let i = 0; i < data.length; i++) {
+  //   // Add the row starting tag
+  //   htmlData += '<tr>'
+
+  //   // Print selected properties only
+  //   for (let n = 0; n < properties.length; n++) {
+  //     let stringData = data[i]
+
+  //     // Support nested objects
+  //     const property = properties[n].field.split('.')
+  //     if (property.length > 1) {
+  //       for (let p = 0; p < property.length; p++) {
+  //         stringData = stringData[property[p]]
+  //       }
+  //     } else {
+  //       stringData = stringData[properties[n].field]
+  //     }
+
+  //     // Add the row contents and styles
+  //     htmlData += '<td style="width:' + properties[n].columnSize + params.gridStyle + '">' + stringData + '</td>'
+  //   }
+
+  //   // Add the row closing tag
+  //   htmlData += '</tr>'
+  // }
+
   for (let i = 0; i < data.length; i++) {
     // Add the row starting tag
     htmlData += '<tr>'
+    const _data = data[i]
 
     // Print selected properties only
-    for (let n = 0; n < properties.length; n++) {
-      let stringData = data[i]
-
-      // Support nested objects
-      const property = properties[n].field.split('.')
-      if (property.length > 1) {
-        for (let p = 0; p < property.length; p++) {
-          stringData = stringData[property[p]]
-        }
-      } else {
-        stringData = stringData[properties[n].field]
-      }
+    for (let n = 0; n < handleDataRes.keys.length; n++) {
+      const _key = handleDataRes.keys[n]
 
       // Add the row contents and styles
-      htmlData += '<td style="width:' + properties[n].columnSize + params.gridStyle + '">' + stringData + '</td>'
+      htmlData += '<td style="width:4;' + params.gridStyle + '">' + _data[_key] + '</td>'
     }
 
     // Add the row closing tag
