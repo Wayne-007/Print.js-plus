@@ -1,11 +1,9 @@
 {
-  "name": "print-js",
-  "homepage": "http://printjs.crabbly.com",
-  "description": "A tiny javascript library to help printing from the web.",
-  "version": "1.6.0",
+  "name": "print-js-plus",
+  "description": "Based on Print.js (v1.6.0), a small javascript library that helps print from the web.",
+  "version": "1.6.1",
   "main": "dist/print.js",
   "types": "src/index.d.ts",
-  "repository": "https://github.com/crabbly/Print.js",
   "license": "MIT",
   "devDependencies": {
     "@babel/core": "7.11.6",
@@ -53,6 +51,13 @@
     }
   },
   "keywords": [
+    "printjsplus",
+    "printjs plus",
+    "print.js plus",
+    "print-js-plus",
+    "printjs+",
+    "printjs +",
+    "print.js +",
     "printjs",
     "print.js",
     "print-js"
