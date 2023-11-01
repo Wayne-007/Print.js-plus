@@ -1,15 +1,19 @@
 import Modal from './modal'
 import Browser from './browser'
 
+// 主要是处理json数据，用于生成表头
 export const handleJSONData = ({ data = [], level = 0, params }) => {
-  let maxLevel = level + 1
-  const keys = []
-  const keyItems = []
+  let maxLevel = level + 1  //  标记层级，用于表格合并
+  const keys = [] //  最后一级的字段，用于数据渲染
+  const keyItems = [] //  和上面基本一样，但是信息更多
+
   const _resData = data.map((property) => {
     const _item = {
-      dataIndex: typeof property === 'object' ? property.dataIndex : property,
-      title: typeof property === 'object' ? property.title : property,
-      columnSize: typeof property === 'object' && property.columnSize ? property.columnSize + ';' : 100 / params.properties.length + '%;',
+      dataIndex: typeof property === 'object' ? property.dataIndex : property,  //  渲染关键字
+      title: typeof property === 'object' ? property.title : property,  //  表头名称
+      align: typeof property === 'object' ? property.align : property,  //  表头文字位置
+      width: typeof property === 'object' && property.width ? property.width : '',  //  表格所占的宽度，没有设置则计算百分比
+      // columnSize: typeof property === 'object' && property.columnSize ? `${property.columnSize};` : `${100 / params.properties.length}%;`,  //  表格所占的宽度，没有设置则计算百分比
       level: level + 1
     }
     if (property.children && property.children.length) {

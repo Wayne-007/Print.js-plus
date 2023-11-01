@@ -20,18 +20,13 @@ export default {
 
     // We will format the property objects to keep the JSON api compatible with older releases
 
-    const handleDataRes = handleJSONData({ data: params.properties, params })
+    const handleDataRes = handleJSONData({
+      data: params.properties,
+      params
+    })
     params.properties = handleDataRes.data
 
     console.log('handleData===>', handleDataRes)
-
-    // params.properties.map((property) => {
-    //   return {
-    //     dataIndex: typeof property === 'object' ? property.dataIndex : property,
-    //     title: typeof property === 'object' ? property.title : property,
-    //     columnSize: typeof property === 'object' && property.columnSize ? property.columnSize + ';' : 100 / params.properties.length + '%;',
-    //   }
-    // })
 
     // Create a print container element
     params.printableElement = document.createElement('div')
@@ -67,9 +62,6 @@ function jsonToHTML(params, handleDataRes) {
     htmlData += '<thead>'
   }
 
-  // Add the table header row
-  // htmlData += '<tr>'
-
   const handleHtmlDataObjRes = {}
   const handleHtmlData = (properties, params) => {
     let htmlData = ''
@@ -77,7 +69,7 @@ function jsonToHTML(params, handleDataRes) {
       if (!!handleHtmlDataObjRes[`level_${element.level}`] === false) {
         handleHtmlDataObjRes[`level_${element.level}`] = ''
       }
-      htmlData = `<th style="width:${element.columnSize};${params.gridHeaderStyle}"`
+      htmlData = `<th style="width:${element.width || 100 / handleDataRes.keys.length + '%'};${!!element.align === true ? 'text-align:' + element.align : (element.colspan ? 'text-align:center' : '')};${params.gridHeaderStyle}"`
       if (!!element.colspan === true) {
         htmlData += `colspan="${element.colspan}"`
       } else if (element.level < handleDataRes.maxLevel) {
@@ -153,7 +145,7 @@ function jsonToHTML(params, handleDataRes) {
       const _key = handleDataRes.keys[n]
 
       // Add the row contents and styles
-      htmlData += '<td style="width:4;' + params.gridStyle + '">' + _data[_key] + '</td>'
+      htmlData += `<td style="width:4;${params.gridStyle}">${_data[_key]}</td>`
     }
 
     // Add the row closing tag
