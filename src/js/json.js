@@ -1,42 +1,5 @@
-import { capitalizePrint, addHeader, addFooter } from './functions'
+import { capitalizePrint, addHeader, addFooter, handleJSONData } from './functions'
 import Print from './print'
-
-const handleData = ({ data = [], level = 0, params }) => {
-  let maxLevel = level + 1
-  const keys = []
-  const keyItems = []
-  const _resData = data.map((property) => {
-    const _item = {
-      dataIndex: typeof property === 'object' ? property.dataIndex : property,
-      title: typeof property === 'object' ? property.title : property,
-      columnSize: typeof property === 'object' && property.columnSize ? property.columnSize + ';' : 100 / params.properties.length + '%;',
-      level: level + 1
-    }
-    if (property.children && property.children.length) {
-      _item.colspan = property.children.length
-      const childrenObj = handleData({
-        data: property.children,
-        level: _item.level
-      })
-      _item.children = childrenObj.data
-      maxLevel = Math.max(maxLevel, childrenObj.maxLevel)
-      keys.push(...childrenObj.keys)
-      keyItems.push(...childrenObj.keyItems)
-    } else {
-      keys.push(_item.dataIndex)
-      keyItems.push(_item)
-    }
-    return _item
-  })
-
-  return {
-    data: _resData,
-    maxLevel,
-    keys,
-    keyItems
-  }
-}
-let handleDataRes = {}
 
 export default {
   print: (params, printFrame) => {
@@ -57,7 +20,7 @@ export default {
 
     // We will format the property objects to keep the JSON api compatible with older releases
 
-    handleDataRes = handleData({ data: params.properties, params })
+    const handleDataRes = handleJSONData({ data: params.properties, params })
     params.properties = handleDataRes.data
 
     console.log('handleData===>', handleDataRes)
@@ -79,7 +42,7 @@ export default {
     }
 
     // Build the printable html data
-    params.printableElement.innerHTML += jsonToHTML(params)
+    params.printableElement.innerHTML += jsonToHTML(params, handleDataRes)
 
     // Check if we are adding a print footer
     if (params.footer) {
@@ -91,7 +54,7 @@ export default {
   }
 }
 
-function jsonToHTML(params) {
+function jsonToHTML(params, handleDataRes) {
   // Get the row and column data
   const data = params.printable
   const properties = params.properties
@@ -152,10 +115,6 @@ function jsonToHTML(params) {
 
   // Create the table body
   htmlData += '<tbody>'
-
-  console.log('handleDataRes keys===>', handleDataRes.keys)
-
-  console.log('handleDataRes keyItems===>', handleDataRes.keyItems)
 
   // Add the table data rows
   // for (let i = 0; i < data.length; i++) {
