@@ -109,32 +109,6 @@ function jsonToHTML(params, handleDataRes) {
   htmlData += '<tbody>'
 
   // Add the table data rows
-  // for (let i = 0; i < data.length; i++) {
-  //   // Add the row starting tag
-  //   htmlData += '<tr>'
-
-  //   // Print selected properties only
-  //   for (let n = 0; n < properties.length; n++) {
-  //     let stringData = data[i]
-
-  //     // Support nested objects
-  //     const property = properties[n].dataIndex.split('.')
-  //     if (property.length > 1) {
-  //       for (let p = 0; p < property.length; p++) {
-  //         stringData = stringData[property[p]]
-  //       }
-  //     } else {
-  //       stringData = stringData[properties[n].dataIndex]
-  //     }
-
-  //     // Add the row contents and styles
-  //     htmlData += '<td style="width:' + properties[n].columnSize + params.gridStyle + '">' + stringData + '</td>'
-  //   }
-
-  //   // Add the row closing tag
-  //   htmlData += '</tr>'
-  // }
-
   for (let i = 0; i < data.length; i++) {
     // Add the row starting tag
     htmlData += '<tr>'
@@ -143,9 +117,10 @@ function jsonToHTML(params, handleDataRes) {
     // Print selected properties only
     for (let n = 0; n < handleDataRes.keys.length; n++) {
       const _key = handleDataRes.keys[n]
+      const _value = _data[_key]
 
       // Add the row contents and styles
-      htmlData += `<td style="width:4;${params.gridStyle}">${_data[_key]}</td>`
+      htmlData += `<td style="width:4;${params.gridStyle}">${!!_value === false && _value !== 0 ? '' : _value}</td>`
     }
 
     // Add the row closing tag
