@@ -1,6 +1,20 @@
 import Modal from './modal'
 import Browser from './browser'
 
+// 千分位处理
+export const handleThousands = (payload) => {
+  const { val, fixed = 2, unit = '', preUnit = '' } = payload
+  if (!!val === false && val !== 0) {
+    return ''
+  }
+
+  const [integer, decimal] = Number(val).toFixed(fixed).split('.')
+  const formattedInteger = integer.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+  const formattedDecimal = decimal ? `.${decimal}` : ''
+
+  return `${preUnit}${formattedInteger}${formattedDecimal}${unit}`
+}
+
 // 主要是处理json数据，用于生成表头
 export const handleJSONData = ({ data = [], level = 0, params }) => {
   let maxLevel = level + 1  //  标记层级，用于表格合并

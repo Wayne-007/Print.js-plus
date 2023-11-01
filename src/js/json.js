@@ -1,4 +1,4 @@
-import { capitalizePrint, addHeader, addFooter, handleJSONData } from './functions'
+import { capitalizePrint, addHeader, addFooter, handleJSONData, handleThousands } from './functions'
 import Print from './print'
 
 export default {
@@ -88,17 +88,6 @@ function jsonToHTML(params, handleDataRes) {
   for (const key in handleHtmlDataRes) {
     htmlData += `<tr>${handleHtmlDataRes[key]}</tr>`
   }
-  // handleHtmlDataRes.forEach((element) => {
-  //   htmlData += element
-  // })
-
-  // Add the table header columns
-  // for (let a = 0; a < properties.length; a++) {
-  //   htmlData += '<th style="width:' + properties[a].columnSize + ';' + params.gridHeaderStyle + '">' + capitalizePrint(properties[a].title) + '</th>'
-  // }
-
-  // Add the closing tag for the table header row
-  // htmlData += '</tr>'
 
   // If the table header is marked as repeated, add the closing tag
   if (params.repeatTableHeader) {
@@ -117,10 +106,25 @@ function jsonToHTML(params, handleDataRes) {
     // Print selected properties only
     for (let n = 0; n < handleDataRes.keys.length; n++) {
       const _key = handleDataRes.keys[n]
-      const _value = _data[_key]
+      const _keyItem = handleDataRes.keyItems[n]
+
+      let _value = _data[_key]
+      if (!!_value === false && _value !== 0) { //  防止为null
+        _value = ''
+      } else if (_keyItem._isThousands === true) {  //  千分位处理（1,000.00）
+        _value = handleThousands({
+          val: _value
+        })
+      } else if (_keyItem.customRender) {
+        _value = customRender({
+          text: _value,
+          record: _data,
+          index: i
+        })
+      }
 
       // Add the row contents and styles
-      htmlData += `<td style="width:4;${params.gridStyle}">${!!_value === false && _value !== 0 ? '' : _value}</td>`
+      htmlData += `<td style="width:4;${params.gridStyle}">${_value}</td>`
     }
 
     // Add the row closing tag
