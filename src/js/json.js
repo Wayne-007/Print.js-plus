@@ -7,8 +7,8 @@ const handleData = ({ data = [], level = 0, params }) => {
   const keyItems = []
   const _resData = data.map((property) => {
     const _item = {
-      field: typeof property === 'object' ? property.field : property,
-      displayName: typeof property === 'object' ? property.displayName : property,
+      dataIndex: typeof property === 'object' ? property.dataIndex : property,
+      title: typeof property === 'object' ? property.title : property,
       columnSize: typeof property === 'object' && property.columnSize ? property.columnSize + ';' : 100 / params.properties.length + '%;',
       level: level + 1
     }
@@ -23,7 +23,7 @@ const handleData = ({ data = [], level = 0, params }) => {
       keys.push(...childrenObj.keys)
       keyItems.push(...childrenObj.keyItems)
     } else {
-      keys.push(_item.field)
+      keys.push(_item.dataIndex)
       keyItems.push(_item)
     }
     return _item
@@ -64,8 +64,8 @@ export default {
 
     // params.properties.map((property) => {
     //   return {
-    //     field: typeof property === 'object' ? property.field : property,
-    //     displayName: typeof property === 'object' ? property.displayName : property,
+    //     dataIndex: typeof property === 'object' ? property.dataIndex : property,
+    //     title: typeof property === 'object' ? property.title : property,
     //     columnSize: typeof property === 'object' && property.columnSize ? property.columnSize + ';' : 100 / params.properties.length + '%;',
     //   }
     // })
@@ -120,7 +120,7 @@ function jsonToHTML(params) {
       } else if (element.level < handleDataRes.maxLevel) {
         htmlData += `rowspan="${handleDataRes.maxLevel - element.level + 1}"`
       }
-      htmlData += `>${capitalizePrint(element.displayName)}</th>`
+      htmlData += `>${capitalizePrint(element.title)}</th>`
       handleHtmlDataObjRes[`level_${element.level}`] += htmlData
       if (element.children && element.children.length) {
         handleHtmlData(element.children, params)
@@ -139,7 +139,7 @@ function jsonToHTML(params) {
 
   // Add the table header columns
   // for (let a = 0; a < properties.length; a++) {
-  //   htmlData += '<th style="width:' + properties[a].columnSize + ';' + params.gridHeaderStyle + '">' + capitalizePrint(properties[a].displayName) + '</th>'
+  //   htmlData += '<th style="width:' + properties[a].columnSize + ';' + params.gridHeaderStyle + '">' + capitalizePrint(properties[a].title) + '</th>'
   // }
 
   // Add the closing tag for the table header row
@@ -167,13 +167,13 @@ function jsonToHTML(params) {
   //     let stringData = data[i]
 
   //     // Support nested objects
-  //     const property = properties[n].field.split('.')
+  //     const property = properties[n].dataIndex.split('.')
   //     if (property.length > 1) {
   //       for (let p = 0; p < property.length; p++) {
   //         stringData = stringData[property[p]]
   //       }
   //     } else {
-  //       stringData = stringData[properties[n].field]
+  //       stringData = stringData[properties[n].dataIndex]
   //     }
 
   //     // Add the row contents and styles
