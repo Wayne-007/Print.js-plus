@@ -116,7 +116,7 @@ function jsonToHTML(params, handleDataRes) {
           val: _value
         })
       } else if (_keyItem.customRender) {
-        _value = customRender({
+        _value = _keyItem.customRender({
           text: _value,
           record: _data,
           index: i

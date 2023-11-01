@@ -88,7 +88,7 @@
 
   function printJson() {
     let data = []
-    for (let i = 0; i <= 1000; i++) {
+    for (let i = 0; i <= 10; i++) {
       data.push({
         test1: Math.random(1000, 10000) * 1000000,
         test2_1: createRandomString(),
@@ -114,6 +114,7 @@
               title: 'test 2-1',
               width: 4,
               align: 'left',
+              customRender: ({ text }) => `${text}~111`
             },
             {
               dataIndex: 'test2_2',
