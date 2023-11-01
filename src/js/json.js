@@ -54,6 +54,8 @@ function jsonToHTML(params, handleDataRes) {
   const data = params.printable
   const properties = params.properties
 
+  console.log('jsonToHTML===>', params, params.gridHeaderStyle)
+
   // Create a html table
   let htmlData = '<table style="border-collapse: collapse; width: 100%;">'
 

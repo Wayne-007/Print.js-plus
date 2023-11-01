@@ -150,13 +150,29 @@
       printable: data,
       properties: [
         {
-          field: 'test1',
-          displayName: 'test 1',
-          columnSize: 1,
+          dataIndex: 'test1',
+          title: 'test 1',
+          width: 1,
+          _isThousands: true
         },
         {
-          field: 'test2',
-          displayName: 'test 22',
+          dataIndex: 'test2',
+          title: 'test 22',
+          children: [
+            {
+              dataIndex: 'test2_1',
+              title: 'test 2-1',
+              width: 4,
+              align: 'left',
+              customRender: ({ text }) => `${text}~111`
+            },
+            {
+              dataIndex: 'test2_2',
+              title: 'test 2-2',
+              width: 4,
+              align: 'right',
+            },
+          ],
         },
       ],
       type: 'json',
