@@ -90,7 +90,7 @@
     let data = []
     for (let i = 0; i <= 1000; i++) {
       data.push({
-        test1: createRandomString(),
+        test1: Math.random(1000, 10000) * 1000000,
         test2_1: createRandomString(),
         test2_2: createRandomString(),
       })
@@ -103,6 +103,7 @@
           dataIndex: 'test1',
           title: 'test 1',
           width: 1,
+          _isThousands: true
         },
         {
           dataIndex: 'test2',

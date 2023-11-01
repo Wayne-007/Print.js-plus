@@ -23,6 +23,7 @@ export const handleJSONData = ({ data = [], level = 0, params }) => {
 
   const _resData = data.map((property) => {
     const _item = {
+      ...property,
       dataIndex: typeof property === 'object' ? property.dataIndex : property,  //  渲染关键字
       title: typeof property === 'object' ? property.title : property,  //  表头名称
       align: typeof property === 'object' ? property.align : property,  //  表头文字位置
